@@ -4,11 +4,14 @@ Concurrent Java Cache library for simple and fast usage.
 
 ## Usage
 
-To use this cache library, you are given only 2 classes: _SimpleCache_ interface and _SimpleCacheBuilder_ class.
+To use this cache library, you are given only 2 classes: 
+* `SimpleCache` interface 
+* `SimpleCacheBuilder` class
+
 Nothing else matters:)
 
-### Using _SimpleCacheBuilder_
-In order to create new instance of _SimpleCache_ use _SimpleCacheBuilder_ and its builder-methods
+### Using `SimpleCacheBuilder`
+In order to create new instance of `SimpleCache` use `SimpleCacheBuilder` and its builder-methods
 
 ```java
 Cache<Key, Value> sc = new SimpleCacheBuilder<Key, Value>()
@@ -16,10 +19,10 @@ Cache<Key, Value> sc = new SimpleCacheBuilder<Key, Value>()
 			      .timeToLive(2)  // how long the value in cache should remain valid (in seconds; 0 means for-ever)
 			      .build();
 ```
-Of course you can choose your own _Key_ and _Value_ class.
+Of course you can choose your own `Key` and `Value` class.
 
-### Using _SimpleCache.get()_
-Use _SimpleCache.get()_ method to get/put value in cache
+### Using `SimpleCache.get()`
+Use `SimpleCache.get()` method to get/put value in cache
 
 ```java
 SomeValue value = sc.get("key_one", new Callable<SomeValue>() {
@@ -29,10 +32,10 @@ SomeValue value = sc.get("key_one", new Callable<SomeValue>() {
 				}
 			});
 ```
-_resolveSomeValue()_ must return _SomeValue_ object, or null
+`resolveSomeValue()` must return `SomeValue` object, or null
 
-### Closing _SimpleCache_ instance
-If you will not use _SimpleCache_ instance anymore, close it with _close()_ method - it will kill, ongoing cleaner thread
+### Closing `SimpleCache` instance
+If you will not use `SimpleCache` instance anymore, close it with `close()` method - it will kill, ongoing cleaner thread
 
 ```java
 sc.close();
