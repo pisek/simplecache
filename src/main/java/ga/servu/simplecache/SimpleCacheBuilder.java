@@ -28,8 +28,12 @@ public class SimpleCacheBuilder<K, V> {
 		return this;
 	}
 	
+	/**
+	 * Builds {@code SimpleCache} using set properties
+	 * @return {@code SimpleCache} instance
+	 */
 	public SimpleCache<K, V> build() {
-		SimpleCache<K, V> simpleCache = new SimpleCache<K, V>();
+		SimpleCacheImpl<K, V> simpleCache = new SimpleCacheImpl<K, V>();
 		simpleCache.setTimeToLive(timeToLive);
 		simpleCache.setCleaningPeriod(cleaningPeriod);
 		simpleCache.init();

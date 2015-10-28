@@ -6,9 +6,13 @@ import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Class which cleans given cache in a loop.
+ * Class which cleans given cache in a loop.<br>
+ * This implementation is fully Concurrent
  */
 class RemoverThread<K, V> extends Thread {
+
+	/** How many milliseconds should thread wait to check if {@code close()} method was invoked */
+	private static final long SLEEP_CHECK_MILLIS = 500;
 	
 	private ReentrantReadWriteLock rwl;
 	private Map<K, Element<V>> cache;
@@ -22,7 +26,7 @@ class RemoverThread<K, V> extends Thread {
 	 * @param ttl max time object may reside in cache before removal (in seconds)
 	 * @param sleepPeriod how much time must this cleaner thread wait to run again (in seconds)
 	 */
-	public RemoverThread(ReentrantReadWriteLock rwl, Map<K, Element<V>> cache, int sleepPeriod) {
+	RemoverThread(ReentrantReadWriteLock rwl, Map<K, Element<V>> cache, int sleepPeriod) {
 		this.rwl = rwl;
 		this.cache = cache;
 		this.sleepMillis = sleepPeriod*1000L;
@@ -49,15 +53,19 @@ class RemoverThread<K, V> extends Thread {
 				rwl.writeLock().unlock();
 			}
 			
-			try {
-				Thread.sleep(sleepMillis);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
+			long stopWaitingTime = System.currentTimeMillis() + sleepMillis;
+			while (stopWaitingTime > System.currentTimeMillis() && !close) {
+				try {
+					Thread.sleep(SLEEP_CHECK_MILLIS);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
 			}
 			
 		}
 	};
-	public void close() {
+	
+	void close() {
 		this.close = true;
 	}
 };

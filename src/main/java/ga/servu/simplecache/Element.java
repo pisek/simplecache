@@ -14,7 +14,7 @@ class Element<V> {
 		this.expirationTime = System.currentTimeMillis() + timeToLive*1000L;
 	}
 
-	public V getValue() {
+	V getValue() {
 		return value;
 	}
 
@@ -22,7 +22,7 @@ class Element<V> {
 		return System.currentTimeMillis() <= this.expirationTime;
 	}
 
-	public boolean isActive(long now) {
+	boolean isActive(long now) {
 		return now <= this.expirationTime;
 	}
 

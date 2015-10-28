@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ public class SimpleCacheTest {
 				@Override
 				public Date call() throws Exception {
 					I++;
-					return new Date();
+					return new Date();	//some expensive data computations here
 				}
 			};
 			final CCC c = new CCC();
@@ -81,7 +82,7 @@ public class SimpleCacheTest {
 	}
 	
 	@Test
-	public void testSimpleCache() throws Exception {
+	public void testSimpleCacheBasic() throws Exception {
 		
 		SimpleCache<String, Integer> sc = new SimpleCacheBuilder<String, Integer>().cleaningPeriod(0).timeToLive(2).build();
 		try {
@@ -105,4 +106,5 @@ public class SimpleCacheTest {
 		}
 		
 	}
+	
 }

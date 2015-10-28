@@ -1,90 +1,29 @@
 package ga.servu.simplecache;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class SimpleCache<K, V> implements Cache<K, V>, Closeable {
+/**
+ * Simple interface of Cache
+ */
+public interface SimpleCache<K, V> {
 	
-	private final ReentrantReadWriteLock RWL = new ReentrantReadWriteLock();
-	private final ExecutorService POOL = Executors.newFixedThreadPool(1);
-
-	private HashMap<K, Element<V>> CACHE = new HashMap<K, Element<V>>();
-	private RemoverThread<K, V> REMOVER;
+	/**
+	 * Get method which will try to resolve value from cache.<br>
+	 * If it is not found, cache will fireup the {@code Callable} which will resolve value from actual source.<br>
+	 * The value resolved from {@code Callable} is then put in cache using given key.
+	 * 
+	 * @param key key to search for in cache
+	 * @param valueLoader {@code Callable} to fire up if given key is not found; it is then put in cache with given key
+	 * @return requested value
+	 * @throws ExecutionException is thrown when {@code Callable} throws any {@code Exception}. Inner {@code Exception} is wrapped into this {@code ExecutionException}
+	 */
+	public V get(K key, Callable<V> valueLoader) throws ExecutionException;
 	
-	private int timeToLive;
-	private int cleaningPeriod;
-	private boolean useRemover = true;
-
-	SimpleCache() {}
-
-	void init() {
-		if (useRemover ) {
-			REMOVER = new RemoverThread<K, V> (RWL, CACHE, cleaningPeriod);
-			REMOVER.start();
-		}
-	}
+	/**
+	 * Method which closes all instances of inner threads like cleaner-thread etc.<br>
+	 * Should be invoked upon not using cache anymore and before creating new cache instance etc.
+	 */
+	public void close();
 	
-	@Override
-	public void close() throws IOException {
-		if (useRemover) {
-			REMOVER.close();
-		}
-	}
-	
-	@Override
-	public V get(K key, Callable<V> valueLoader) throws ExecutionException {
-		
-		try {
-			RWL.readLock().lock();
-			Element<V> e = CACHE.get(key);
-			if (e == null || !e.isActive()) {
-
-				try {
-					RWL.readLock().unlock();
-					RWL.writeLock().lock();
-					e = CACHE.get(key);
-					if (e == null || !e.isActive()) {
-						V v = POOL.submit(valueLoader).get();
-						e = new Element<V>(v, timeToLive);
-						CACHE.put(key, e);
-					}
-				} catch (InterruptedException ex) {
-					throw new ExecutionException(ex);
-				} finally {
-					RWL.readLock().lock();
-					RWL.writeLock().unlock();
-				}
-				
-			}
-			return e.getValue();
-		} finally {
-			RWL.readLock().unlock();
-		}
-		
-	}
-
-	public int getTimeToLive() {
-		return timeToLive;
-	}
-
-	void setTimeToLive(int timeToLive) {
-		this.timeToLive = timeToLive;
-		this.useRemover = timeToLive<=0 ? false : this.useRemover;
-	}
-
-	public int getCleaningPeriod() {
-		return cleaningPeriod;
-	}
-
-	void setCleaningPeriod(int cleaningPeriod) {
-		this.cleaningPeriod = cleaningPeriod;
-		this.useRemover = cleaningPeriod<=0 ? false : this.useRemover;
-	}
-
 }
