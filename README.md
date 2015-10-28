@@ -4,10 +4,11 @@ Concurrent Java Cache library for simple and fast usage.
 
 ## Usage
 
-To use this cache library, you are given only 2 classes: SimpleCache interface and SimpleCacheBuilder class.
-Nothing else is necessary.
+To use this cache library, you are given only 2 classes: _SimpleCache_ interface and _SimpleCacheBuilder_ class.
+Nothing else matters:)
 
-### Using SimpleCacheBuilder to create cache
+### Using _SimpleCacheBuilder_
+In order to create new instance of _SimpleCache_ use _SimpleCacheBuilder_ and its builder-methods
 
 ```java
 Cache<Key, Value> sc = new SimpleCacheBuilder<Key, Value>()
@@ -17,7 +18,8 @@ Cache<Key, Value> sc = new SimpleCacheBuilder<Key, Value>()
 ```
 Of course you can choose your own _Key_ and _Value_ class.
 
-### Using SimpleCache.get method get/put value in cache
+### Using _SimpleCache.get()_
+Use _SimpleCache.get()_ method to get/put value in cache
 
 ```java
 SomeValue value = sc.get("key_one", new Callable<SomeValue>() {
@@ -29,7 +31,8 @@ SomeValue value = sc.get("key_one", new Callable<SomeValue>() {
 ```
 _resolveSomeValue()_ must return _SomeValue_ object, or null
 
-### If you are not going to use SimpleCache instance, close it with close method
+### Closing _SimpleCache_ instance
+If you will not use _SimpleCache_ instance anymore, close it with _close()_ method - it will kill, ongoing cleaner thread
 
 ```java
 sc.close();
@@ -38,16 +41,16 @@ sc.close();
 ## Example usage
 
 ```java
-		SimpleCache<String, Integer> sc = new SimpleCacheBuilder<String, Integer>()
-			      .cleaningPeriod(10)
-			      .timeToLive(2)
-			      .build();
-			      
+	private static final SimpleCache<String, BigDecimal> SC = new SimpleCacheBuilder<String, BigDecimal>()
+		      .cleaningPeriod(10)
+		      .timeToLive(2)
+		      .build();
+	...
 		try {
-			Integer value = sc.get("key_one", new Callable<Integer>() {
+			BigDecimal value = SC.get("key_one", new Callable<BigDecimal>() {
 				@Override
-				public Integer call() throws Exception {
-					return new Random().nextInt();
+				public BigDecimal call() throws Exception {
+					return doSomeExpensiveComputations();
 				}
 			});
 			
@@ -56,4 +59,6 @@ sc.close();
 		} catch (ExecutionException e) {
 			// some exception was thrown during execution of Callable
 		}
+	...
+	SC.close();	// close cache after usage
 ```
