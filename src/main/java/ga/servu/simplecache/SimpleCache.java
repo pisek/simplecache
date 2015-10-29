@@ -1,7 +1,6 @@
 package ga.servu.simplecache;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Simple interface of Cache
@@ -16,9 +15,9 @@ public interface SimpleCache<K, V> {
 	 * @param key key to search for in cache
 	 * @param valueLoader {@code Callable} to fire up if given key is not found; it is then put in cache with given key
 	 * @return requested value
-	 * @throws ExecutionException is thrown when {@code Callable} throws any {@code Exception}. Inner {@code Exception} is wrapped into this {@code ExecutionException}
+	 * @throws Exception thrown by {@code Callable}
 	 */
-	public V get(K key, Callable<V> valueLoader) throws ExecutionException;
+	public V get(K key, Callable<V> valueLoader) throws Exception;
 	
 	/**
 	 * Method which closes all instances of inner threads like cleaner-thread etc.<br>

@@ -4,8 +4,6 @@ import java.io.Closeable;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -14,7 +12,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 class SimpleCacheImpl<K, V> implements SimpleCache<K, V>, Closeable {
 	
 	private final ReentrantReadWriteLock RWL = new ReentrantReadWriteLock();
-	private final ExecutorService POOL = Executors.newFixedThreadPool(1);
 
 	private HashMap<K, Element<V>> CACHE = new HashMap<K, Element<V>>();
 	private RemoverThread<K, V> REMOVER;
@@ -45,7 +42,7 @@ class SimpleCacheImpl<K, V> implements SimpleCache<K, V>, Closeable {
 	}
 	
 	@Override
-	public V get(K key, Callable<V> valueLoader) throws ExecutionException {
+	public V get(K key, Callable<V> valueLoader) throws Exception {
 		
 		try {
 			RWL.readLock().lock();
@@ -57,7 +54,7 @@ class SimpleCacheImpl<K, V> implements SimpleCache<K, V>, Closeable {
 					RWL.writeLock().lock();
 					e = CACHE.get(key);
 					if (e == null || !e.isActive()) {
-						V v = POOL.submit(valueLoader).get();
+						V v = valueLoader.call();
 						e = new Element<V>(v, timeToLive);
 						CACHE.put(key, e);
 					}
