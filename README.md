@@ -1,6 +1,6 @@
 # SimpleCache
 
-+Fully Concurrent+ Java Cache library for simple and fast usage.
+__Fully Concurrent__ Java Cache library for simple and fast usage.
 
 ## Usage
 
