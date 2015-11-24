@@ -1,4 +1,5 @@
 # SimpleCache
+[![Build Status](https://travis-ci.org/pisek/simplecache.svg?branch=master)](https://travis-ci.org/pisek/simplecache)
 
 __Fully Concurrent__ Java Cache library for simple and fast usage.
 
