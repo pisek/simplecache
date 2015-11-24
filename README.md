@@ -37,7 +37,7 @@ SomeValue value = sc.get("key_one", new Callable<SomeValue>() {
 				}
 			});
 ```
-`resolveSomeValue()` must return `SomeValue` object, or null
+Method `resolveSomeValue()` must return `SomeValue` object, or null
 
 ### Closing `SimpleCache` instance
 If you will not use `SimpleCache` instance anymore, close it with `close()` method - it will kill, ongoing cleaner thread
