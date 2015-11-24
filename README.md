@@ -25,6 +25,11 @@ Of course you can choose your own `Key` and `Value` class.
 Use `SimpleCache.get()` method to get/put value in cache
 
 ```java
+SomeValue value = sc.get("key_one", () -> resolveSomeValue();
+```
+
+or using older Java versions:
+```java
 SomeValue value = sc.get("key_one", new Callable<SomeValue>() {
 				@Override
 				public SomeValue call() throws Exception {
@@ -50,12 +55,7 @@ sc.close();
 		      .build();
 	...
 		try {
-			BigDecimal value = SC.get("key_one", new Callable<BigDecimal>() {
-				@Override
-				public BigDecimal call() throws Exception {
-					return doSomeExpensiveComputations();
-				}
-			});
+			BigDecimal value = SC.get("key_one", () -> doSomeExpensiveComputations();
 			
 			// do something with the value
 			

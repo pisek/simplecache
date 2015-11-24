@@ -87,12 +87,7 @@ public class SimpleCacheTest {
 		SimpleCache<String, Integer> sc = new SimpleCacheBuilder<String, Integer>().cleaningPeriod(0).timeToLive(2).build();
 		try {
 			
-			Callable<Integer> c = new Callable<Integer>() {
-				@Override
-				public Integer call() throws Exception {
-					return new Random().nextInt();
-				}
-			};
+			Callable<Integer> c = ()->new Random().nextInt();
 			
 			Integer i = sc.get("dupa1", c);
 			assertEquals(i, sc.get("dupa1", c));
