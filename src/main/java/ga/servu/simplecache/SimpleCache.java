@@ -1,11 +1,12 @@
 package ga.servu.simplecache;
 
+import java.io.Closeable;
 import java.util.concurrent.Callable;
 
 /**
  * Simple interface of Cache
  */
-public interface SimpleCache<K, V> {
+public interface SimpleCache<K, V> extends Closeable {
 	
 	/**
 	 * Get method which will try to resolve value from cache.<br>
@@ -23,6 +24,7 @@ public interface SimpleCache<K, V> {
 	 * Method which closes all instances of inner threads like cleaner-thread etc.<br>
 	 * Should be invoked upon not using cache anymore and before creating new cache instance etc.
 	 */
+	@Override
 	public void close();
 	
 }
