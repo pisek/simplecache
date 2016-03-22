@@ -26,7 +26,7 @@ Of course you can choose your own `Key` and `Value` class.
 Use `SimpleCache.get()` method to get/put value in cache
 
 ```java
-SomeValue value = sc.get("key_one", () -> resolveSomeValue();
+SomeValue value = sc.get("key_one", () -> resolveSomeValue());
 ```
 
 or using older Java versions:
